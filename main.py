@@ -5,7 +5,6 @@ import torch.optim as optim
 import argparse
 import pickle
 import KNRM
-import CKNRM
 import sys
 import logging
 import numpy as np
@@ -182,23 +181,7 @@ def main():
         test_data = pickle.load(open(test_filename, 'r'))
         dev_data = pickle.load(open(dev_filename, 'r'))
         weights = np.load("./data/wikiqa/embed.txt")
-
-    elif opt.task == "trecqa-clean":
-        train_filename = "./data/trecqa/trec_train_pair.pkl"
-        test_filename = "./data/trecqa/trec_test_clean.pkl"
-        dev_filename = "./data/trecqa/trec_dev_clean.pkl"
-        train_data = pickle.load(open(train_filename, 'r'))
-        test_data = pickle.load(open(test_filename, 'r'))
-        dev_data = pickle.load(open(dev_filename, 'r'))
-        weights = np.load("./data/trecqa/embed.txt")
-    elif opt.task == "trecqa-all":
-        train_filename = "./data/trecqa/trec_train_pair.pkl"
-        test_filename = "./data/trecqa/trec_test_all.pkl"
-        dev_filename = "./data/trecqa/trec_dev_all.pkl"
-        train_data = pickle.load(open(train_filename, 'r'))
-        test_data = pickle.load(open(test_filename, 'r'))
-        dev_data = pickle.load(open(dev_filename, 'r'))
-        weights = np.load("./data/trecqa/embed.txt")
+        
     else:
         raise ("Not implement!")
     train_data = Dataloader(data = train_data, opt = opt, shuffle=True)
@@ -206,8 +189,6 @@ def main():
     dev_data = DataloaderTest(data = dev_data, opt = opt)
     if opt.model == "knrm":
         model = KNRM.knrm(opt, weights)
-    elif opt.model == "cknrm":
-        model = CKNRM.knrm(opt, weights)
     else:
         raise ("No such model!")
     crit = nn.MarginRankingLoss(margin=1, size_average=True)
