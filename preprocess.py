@@ -109,26 +109,6 @@ class Util(object):
         print len(right)
         pickle.dump(pair_list,ff)
 
-
-
-def preprocess_trecqa(input_dir,output_dir):
-    def generate_combine_data(sub_dir):
-        b_file = open(input_dir+sub_dir+"/b.toks",'r')
-        s_file = open(input_dir+sub_dir+"/sim.txt",'r')
-        i_file = open(input_dir+sub_dir+"/id.txt",'r')
-        new_file = open(output_dir+sub_dir+".txt",'w')
-        for a_line in file(input_dir+sub_dir+"/a.toks"):
-            a_line = a_line.strip()
-            b_line = b_file.readline().strip()
-            s_line = s_file.readline().strip()
-            i_line = i_file.readline().strip()
-            new_file.write(a_line+"\t"+b_line+"\t"+s_line+"\t"+i_line+"\n")
-    generate_combine_data("clean-dev")
-    generate_combine_data("clean-test")
-    generate_combine_data("train-all")
-    generate_combine_data("raw-dev")
-    generate_combine_data("raw-test")
-
 def preprocess_wikiqa(input_dir,output_dir):
     def generate_combine_data(sub_dir):
         s_file = open(input_dir+"WikiQA-"+sub_dir+".txt",'r')
@@ -157,18 +137,5 @@ if __name__ == "__main__":
         Util.generate_data("./data/wikiqa/dev.txt","./data/wikiqa/vocab.txt","./data/wikiqa/wiki_dev.pkl")
         Util.generate_data("./data/wikiqa/test.txt","./data/wikiqa/vocab.txt","./data/wikiqa/wiki_test.pkl")
         Util.generate_pairwise_data("./data/wikiqa/wiki_train.pkl", "./data/wikiqa/wiki_train_pair.pkl")
-    elif task == "trecqa":
-        preprocess_trecqa(input_dir="./data/raw_data/TrecQA/",output_dir="./data/trecqa/")
-        print "generate vocab"
-        Util.generate_vocab(file_list=["./data/trecqa/train-all.txt","./data/trecqa/clean-dev.txt","./data/trecqa/clean-test.txt"],output_file="./data/trecqa/vocab.txt",initial_vocab=inital_vocab)
-        print "generate emb"
-        Util.generate_embed(vocab_file="./data/trecqa/vocab.txt",glovec_file="./data/glove/glove.840B.300d.txt",output_file="./data/trecqa/embed.txt")
-        print "generate data pkl"
-        Util.generate_data("./data/trecqa/clean-dev.txt","./data/trecqa/vocab.txt","./data/trecqa/trec_dev_clean.pkl")
-        Util.generate_data("./data/trecqa/clean-test.txt","./data/trecqa/vocab.txt","./data/trecqa/trec_test_clean.pkl")
-        Util.generate_data("./data/trecqa/train-all.txt","./data/trecqa/vocab.txt","./data/trecqa/trec_train.pkl")
-        Util.generate_data("./data/trecqa/raw-dev.txt","./data/trecqa/vocab.txt","./data/trecqa/trec_dev_all.pkl")
-        Util.generate_data("./data/trecqa/raw-test.txt","./data/trecqa/vocab.txt","./data/trecqa/trec_test_all.pkl")
-        Util.generate_pairwise_data("./data/trecqa/trec_train.pkl", "./data/trecqa/trec_train_pair.pkl")
     else:
         sys.stderr.write("illegal param")
